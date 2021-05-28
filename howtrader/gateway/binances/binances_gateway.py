@@ -442,7 +442,7 @@ class BinancesRestApi(RestClient):
 
         params = {
             "symbol": req.symbol,
-            "side": DIRECTION_VT2BINANCES[req.direction],
+            # "side": DIRECTION_VT2BINANCES[req.direction],
             "type": order_type,
             "timeInForce": time_condition,
             "price": float(req.price),
@@ -450,14 +450,31 @@ class BinancesRestApi(RestClient):
             "newClientOrderId": orderid,
         }
 
-        if req.offset == Offset.CLOSE:
-            params["reduceOnly"] = True
+        if req.offset == Offset.OPEN:
+            if req.direction == Direction.LONG:#开多
+                params['side'] = "BUY"
+                params['positionSide']= "LONG"
+
+            # params["reduceOnly"] = True
+            else:#开空
+                params['side'] = "SELL"
+                params['positionSide'] = "SHORT"
+
+        else:
+            if req.direction == Direction.SHORT:#平多
+                params['side'] = "SELL"
+                params['positionSide'] = "LONG"
+            # params["reduceOnly"] = True
+            else:#平空
+                params['side'] = "BUY"
+                params['positionSide'] = "SHORT"
+
 
         if self.usdt_base:
             path = "/fapi/v1/order"
         else:
             path = "/dapi/v1/order"
-
+        print("path:%s,params:%s" %(path,str(params)))
         self.add_request(
             method="POST",
             path=path,
