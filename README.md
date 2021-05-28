@@ -1,6 +1,6 @@
 # how trader
 How to be a (quant) trader.  
-如何成为一个量化交易者
+如何成为一个量化交易者11
 
 the project is forked from VNPY. you can refer to the vnpy project. For
 easy to learn and easy to install the vnpy project. I just simply remove
