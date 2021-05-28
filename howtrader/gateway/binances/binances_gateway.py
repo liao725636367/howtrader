@@ -442,14 +442,15 @@ class BinancesRestApi(RestClient):
 
         params = {
             "symbol": req.symbol,
-            # "side": DIRECTION_VT2BINANCES[req.direction],
+            "side": DIRECTION_VT2BINANCES[req.direction],
             "type": order_type,
             "timeInForce": time_condition,
             "price": float(req.price),
             "quantity": float(req.volume),
             "newClientOrderId": orderid,
         }
-
+        # if req.offset == Offset.CLOSE:
+        #     params["reduceOnly"] = True
         if req.offset == Offset.OPEN:
             if req.direction == Direction.LONG:#开多
                 params['side'] = "BUY"
