@@ -6,11 +6,11 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Callable, Dict, Tuple, Optional
+from typing import Callable, Dict, Tuple, Union, Optional
 from decimal import Decimal
 from math import floor, ceil
-
 import numpy as np
+import talib
 
 from .object import BarData, TickData
 from .constant import Exchange, Interval
@@ -403,6 +403,82 @@ class ArrayManager(object):
         Get trading volume time series.
         """
         return self.open_interest_array
+    def atr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Average True Range (ATR).
+        """
+        result = talib.ATR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def natr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        NATR.
+        """
+        result = talib.NATR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def rsi(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Relative Strenght Index (RSI).
+        """
+        result = talib.RSI(self.close, n)
+        if array:
+            return result
+        return result[-1]
+    def sma(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Simple moving average.
+        """
+        result = talib.SMA(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def ema(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Exponential moving average.
+        """
+        result = talib.EMA(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def kama(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        KAMA.
+        """
+        result = talib.KAMA(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def wma(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        WMA.
+        """
+        result = talib.WMA(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def apo(
+        self,
+        fast_period: int,
+        slow_period: int,
+        matype: int = 0,
+        array: bool = False
+    ) -> Union[float, np.ndarray]:
+        """
+                APO.
+                """
+        result = talib.APO(self.close, fast_period, slow_period, matype)
+        if array:
+            return result
+        return result[-1]
 
 def virtual(func: Callable) -> Callable:
     """
