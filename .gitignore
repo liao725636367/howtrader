@@ -34,3 +34,4 @@ _templates
 # Misc
 .DS_Store
 /howtrader/_gsdata_
+/howtrader/__pycache__
