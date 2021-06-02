@@ -1,5 +1,5 @@
 """
-Gateway for Binance Crypto Exchange. liao
+Gateway for Binance Crypto Exchange.
 """
 
 import urllib
@@ -66,14 +66,6 @@ STATUS_BINANCES2VT: Dict[str, Status] = {
     "REJECTED": Status.REJECTED,
     "EXPIRED": Status.CANCELLED
 }
-STATUS_BINANCES2VT: Dict[str, Status] = {
-    "NEW": Status.NOTTRADED,
-    "PARTIALLY_FILLED": Status.PARTTRADED,
-    "FILLED": Status.ALLTRADED,
-    "CANCELED": Status.CANCELLED,
-    "REJECTED": Status.REJECTED,
-    "EXPIRED": Status.CANCELLED
-}
 
 ORDERTYPE_VT2BINANCES: Dict[OrderType, Tuple[str, str]] = {
     OrderType.LIMIT: ("LIMIT", "GTC"),
@@ -84,28 +76,10 @@ ORDERTYPE_VT2BINANCES: Dict[OrderType, Tuple[str, str]] = {
 ORDERTYPE_BINANCES2VT: Dict[Tuple[str, str], OrderType] = {v: k for k, v in ORDERTYPE_VT2BINANCES.items()}
 
 DIRECTION_VT2BINANCES: Dict[Direction, str] = {
-    Direction.LONG: {
-        Offset.OPEN:"BUY",
-        Offset.CLOSE:"SELL"
-    },
-    Direction.SHORT: {
-            Offset.OPEN:"SELL",
-            Offset.CLOSE:"BUY"
-        },
+    Direction.LONG: "BUY",
+    Direction.SHORT: "SELL"
 }
-DIRECTION_BINANCES2VT: Dict[str, Direction] = {
-    Direction.LONG.name:{
-        "Direction":Direction.LONG,
-        "BUY":Offset.OPEN,
-        "SELL":Offset.CLOSE
-    },
-    Direction.SHORT.name:{
-        "Direction":Direction.SHORT,
-        "SELL": Offset.OPEN,
-        "BUY":Offset.CLOSE
-
-    }
-}
+DIRECTION_BINANCES2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2BINANCES.items()}
 
 INTERVAL_VT2BINANCES: Dict[Interval, str] = {
     Interval.MINUTE: "1m",
@@ -468,21 +442,22 @@ class BinancesRestApi(RestClient):
 
         params = {
             "symbol": req.symbol,
-            "side": DIRECTION_VT2BINANCES[req.direction][req.offset],
+            "side": DIRECTION_VT2BINANCES[req.direction],
             "type": order_type,
             "timeInForce": time_condition,
             "price": float(req.price),
             "quantity": float(req.volume),
             "newClientOrderId": orderid,
         }
-        params['positionSide'] = req.direction.name
+
+        if req.offset == Offset.CLOSE:
+            params["reduceOnly"] = True
 
         if self.usdt_base:
             path = "/fapi/v1/order"
         else:
             path = "/dapi/v1/order"
 
-        print("path:%s,params:%s" %(path,str(params)))
         self.add_request(
             method="POST",
             path=path,
@@ -623,9 +598,8 @@ class BinancesRestApi(RestClient):
                 exchange=Exchange.BINANCE,
                 price=float(d["price"]),
                 volume=float(d["origQty"]),
-                offset=DIRECTION_BINANCES2VT[d['positionSide']][d['side']],
                 type=order_type,
-                direction=DIRECTION_BINANCES2VT[d['positionSide']]['Direction'],
+                direction=DIRECTION_BINANCES2VT[d["side"]],
                 traded=float(d["executedQty"]),
                 status=STATUS_BINANCES2VT.get(d["status"], None),
                 datetime=generate_datetime(d["time"]),
@@ -649,9 +623,8 @@ class BinancesRestApi(RestClient):
             exchange=Exchange.BINANCE,
             price=float(data["price"]),
             volume=float(data["origQty"]),
-            offset=DIRECTION_BINANCES2VT[data['positionSide']][data['side']],
             type=order_type,
-            direction= DIRECTION_BINANCES2VT[data['positionSide']]['Direction'],
+            direction=DIRECTION_BINANCES2VT[data["side"]],
             traded=float(data["executedQty"]),
             status=STATUS_BINANCES2VT.get(data["status"], None),
             datetime=generate_datetime(data["time"]),
@@ -890,9 +863,8 @@ class BinancesTradeWebsocketApi(WebsocketClient):
             symbol=ord_data["s"],
             exchange=Exchange.BINANCE,
             orderid=str(ord_data["c"]),
-            offset=DIRECTION_BINANCES2VT[ord_data['ps']][ord_data['S']],
             type=order_type,
-            direction=DIRECTION_BINANCES2VT[ord_data['ps']]["Direction"],
+            direction=DIRECTION_BINANCES2VT[ord_data["S"]],
             price=float(ord_data["p"]),
             volume=float(ord_data["q"]),
             traded=float(ord_data["z"]),

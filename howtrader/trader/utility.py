@@ -403,32 +403,6 @@ class ArrayManager(object):
         Get trading volume time series.
         """
         return self.open_interest_array
-    def atr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
-        """
-        Average True Range (ATR).
-        """
-        result = talib.ATR(self.high, self.low, self.close, n)
-        if array:
-            return result
-        return result[-1]
-
-    def natr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
-        """
-        NATR.
-        """
-        result = talib.NATR(self.high, self.low, self.close, n)
-        if array:
-            return result
-        return result[-1]
-
-    def rsi(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
-        """
-        Relative Strenght Index (RSI).
-        """
-        result = talib.RSI(self.close, n)
-        if array:
-            return result
-        return result[-1]
     def sma(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
         """
         Simple moving average.
@@ -473,9 +447,384 @@ class ArrayManager(object):
         array: bool = False
     ) -> Union[float, np.ndarray]:
         """
-                APO.
-                """
+        APO.
+        """
         result = talib.APO(self.close, fast_period, slow_period, matype)
+        if array:
+            return result
+        return result[-1]
+
+    def cmo(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        CMO.
+        """
+        result = talib.CMO(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def mom(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        MOM.
+        """
+        result = talib.MOM(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def ppo(
+        self,
+        fast_period: int,
+        slow_period: int,
+        matype: int = 0,
+        array: bool = False
+    ) -> Union[float, np.ndarray]:
+        """
+        PPO.
+        """
+        result = talib.PPO(self.close, fast_period, slow_period, matype)
+        if array:
+            return result
+        return result[-1]
+
+    def roc(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ROC.
+        """
+        result = talib.ROC(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def rocr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ROCR.
+        """
+        result = talib.ROCR(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def rocp(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ROCP.
+        """
+        result = talib.ROCP(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def rocr_100(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ROCR100.
+        """
+        result = talib.ROCR100(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def trix(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        TRIX.
+        """
+        result = talib.TRIX(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def std(self, n: int, nbdev: int = 1, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Standard deviation.
+        """
+        result = talib.STDDEV(self.close, n, nbdev)
+        if array:
+            return result
+        return result[-1]
+
+    def obv(self, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        OBV.
+        """
+        result = talib.OBV(self.close, self.volume)
+        if array:
+            return result
+        return result[-1]
+
+    def cci(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Commodity Channel Index (CCI).
+        """
+        result = talib.CCI(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def atr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Average True Range (ATR).
+        """
+        result = talib.ATR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def natr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        NATR.
+        """
+        result = talib.NATR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def rsi(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Relative Strenght Index (RSI).
+        """
+        result = talib.RSI(self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def macd(
+        self,
+        fast_period: int,
+        slow_period: int,
+        signal_period: int,
+        array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray, np.ndarray],
+        Tuple[float, float, float]
+    ]:
+        """
+        MACD.
+        """
+        macd, signal, hist = talib.MACD(
+            self.close, fast_period, slow_period, signal_period
+        )
+        if array:
+            return macd, signal, hist
+        return macd[-1], signal[-1], hist[-1]
+
+    def adx(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ADX.
+        """
+        result = talib.ADX(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def adxr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        ADXR.
+        """
+        result = talib.ADXR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def dx(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        DX.
+        """
+        result = talib.DX(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def minus_di(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        MINUS_DI.
+        """
+        result = talib.MINUS_DI(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def plus_di(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        PLUS_DI.
+        """
+        result = talib.PLUS_DI(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def willr(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        WILLR.
+        """
+        result = talib.WILLR(self.high, self.low, self.close, n)
+        if array:
+            return result
+        return result[-1]
+
+    def ultosc(
+        self,
+        time_period1: int = 7,
+        time_period2: int = 14,
+        time_period3: int = 28,
+        array: bool = False
+    ) -> Union[float, np.ndarray]:
+        """
+        Ultimate Oscillator.
+        """
+        result = talib.ULTOSC(self.high, self.low, self.close, time_period1, time_period2, time_period3)
+        if array:
+            return result
+        return result[-1]
+
+    def trange(self, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        TRANGE.
+        """
+        result = talib.TRANGE(self.high, self.low, self.close)
+        if array:
+            return result
+        return result[-1]
+
+    def boll(
+        self,
+        n: int,
+        dev: float,
+        array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray],
+        Tuple[float, float]
+    ]:
+        """
+        Bollinger Channel.
+        """
+        mid = self.sma(n, array)
+        std = self.std(n, 1, array)
+
+        up = mid + std * dev
+        down = mid - std * dev
+
+        return up, down
+
+    def keltner(
+        self,
+        n: int,
+        dev: float,
+        array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray],
+        Tuple[float, float]
+    ]:
+        """
+        Keltner Channel.
+        """
+        mid = self.sma(n, array)
+        atr = self.atr(n, array)
+
+        up = mid + atr * dev
+        down = mid - atr * dev
+
+        return up, down
+
+    def donchian(
+        self, n: int, array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray],
+        Tuple[float, float]
+    ]:
+        """
+        Donchian Channel.
+        """
+        up = talib.MAX(self.high, n)
+        down = talib.MIN(self.low, n)
+
+        if array:
+            return up, down
+        return up[-1], down[-1]
+
+    def aroon(
+        self,
+        n: int,
+        array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray],
+        Tuple[float, float]
+    ]:
+        """
+        Aroon indicator.
+        """
+        aroon_up, aroon_down = talib.AROON(self.high, self.low, n)
+
+        if array:
+            return aroon_up, aroon_down
+        return aroon_up[-1], aroon_down[-1]
+
+    def aroonosc(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Aroon Oscillator.
+        """
+        result = talib.AROONOSC(self.high, self.low, n)
+
+        if array:
+            return result
+        return result[-1]
+
+    def minus_dm(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        MINUS_DM.
+        """
+        result = talib.MINUS_DM(self.high, self.low, n)
+
+        if array:
+            return result
+        return result[-1]
+
+    def plus_dm(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        PLUS_DM.
+        """
+        result = talib.PLUS_DM(self.high, self.low, n)
+
+        if array:
+            return result
+        return result[-1]
+
+    def mfi(self, n: int, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        Money Flow Index.
+        """
+        result = talib.MFI(self.high, self.low, self.close, self.volume, n)
+        if array:
+            return result
+        return result[-1]
+
+    def ad(self, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        AD.
+        """
+        result = talib.AD(self.high, self.low, self.close, self.volume)
+        if array:
+            return result
+        return result[-1]
+
+    def adosc(
+        self,
+        fast_period: int,
+        slow_period: int,
+        array: bool = False
+    ) -> Union[float, np.ndarray]:
+        """
+        ADOSC.
+        """
+        result = talib.ADOSC(self.high, self.low, self.close, self.volume, fast_period, slow_period)
+        if array:
+            return result
+        return result[-1]
+
+    def bop(self, array: bool = False) -> Union[float, np.ndarray]:
+        """
+        BOP.
+        """
+        result = talib.BOP(self.open, self.high, self.low, self.close)
+
         if array:
             return result
         return result[-1]
